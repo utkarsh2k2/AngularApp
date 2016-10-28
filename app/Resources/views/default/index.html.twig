@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('css/ng-tags-input.min.css') }}">
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        {% block javascripts %}
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+            <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+            <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+            <script>
+                var app = angular.module('plunker', []);
+
+                app.controller('MainCtrl', function($scope, $http) {
+                    $scope.myTxt = "You have not clicked submit, yet!";
+                    $scope.show_result = false;
+
+                    $scope.myFunc = function() {
+                        $scope.myTxt = "You clicked submit!";
+                        $scope.show_result = true;
+                    }
+
+                    $scope.categories = [
+                        {"id": 0, "categoryname": "standard"},
+                        {"id": 1, "categoryname": "premium"},
+                        {"id": 2, "categoryname": "gold"}
+                    ];
+
+                    $scope.submitData = function() {
+                        console.log($scope.category);
+                        var jsonString = JSON.stringify($scope.category);
+                        $http.post(Routing.generate('my_route_to_submit'), jsonString, {'Content-Type': 'application/x-www-form-urlencoded'})
+                                .success(function(data, status) {
+                                    $scope.status = status;
+                                    $scope.data = data;
+                                });
+                    }
+                });
+            </script>
+        {% endblock %}
+    </head>
+
+
+    {% block body %}
+        {% verbatim %}
+            <body ng-app="plunker">    
+                <form ng-submit="myFunc()" ng-controller="MainCtrl">
+                    <label><b>Category:</b></label>
+                    <select ng-model="category" ng-options="x.categoryname for x in categories track by x.id">
+                        <option value="">Choose a Category</option>
+                    </select>
+                    <p><b>Model:</b> {{category}}</p>
+                    <input ng-click="submitData()" type="submit" value="Submit"></input>
+                    <i>{{myTxt}}</i>
+                    <p ng-show="show_result"><b>Submitted result:</b> {{data}}</p>
+                </form>
+            </body>
+        {% endverbatim %}
+    {% endblock %}
+</html>

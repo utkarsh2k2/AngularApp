@@ -1,0 +1,12 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+    
+#my_route_to_todos:
+#    pattern:  /todo
+#    defaults:  { _controller: AppBundle:Todo:index }
+#    options:
+#        expose: true
